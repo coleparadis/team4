@@ -43,8 +43,24 @@ public class Battleship {
                         System.out.println("Invalid direction. Please enter either v or h: ");
                     }
                 }
-                // Checks if the placement is valid [Still needs to check whether the ship can fit onto the board]
+                // Checks if the placement can fit on the board
                 validPlacement = true;
+                if (direction.equals("v")) {
+                    if (!(x>=0 && x<=9)) {
+                        validPlacement = false;
+                    }
+                    if (!(y+sizes[i]>=0 && y+sizes[i]<=9)) {
+                        validPlacement = false;
+                    }
+                } else if (direction.equals("h")) {
+                    if (!(x+sizes[i]>=0 && x+sizes[i]<=9)) {
+                        validPlacement = false;
+                    }
+                    if (!(y>=0 && y<=9)) {
+                        validPlacement = false;
+                    }
+                }
+                // Checks if other ships are in the way
                 for (int i2=0; i2<sizes[i]; i2++) {
                     if (direction.equals("v")) {
                         if (!(playerBoard[x][y+i2]==0)) {
@@ -61,7 +77,7 @@ public class Battleship {
                     }
                 }
             }
-            // Place ship onto board
+            // Place ship onto board (once it has been verified as a valid placement)
             for (int i3=0; i3<sizes[i]; i3++) {
                 if (direction.equals("v")) {
                     playerBoard[x][y+i3]=2;
