@@ -2,9 +2,10 @@ import java.util.Scanner;
 
 public class Battleship {
 
+    private static int[][] playerBoard = new int[10][10]; // 0 = EMPTY, 1 = MISSED_SHOT, 2 = SHIP
+    private static int[][] enemyBoard = new int[10][10];
+
     public static void main(String[] args) {
-        int[][] playerBoard = new int[10][10]; // 0 = EMPTY, 1 = MISSED_SHOT, 2 = SHIP
-        int[][] enemyBoard = new int[10][10];
         Scanner scanner = new Scanner(System.in);
         System.out.println("You have these ships:");
         System.out.println("Ship       Size");
@@ -25,9 +26,9 @@ public class Battleship {
                 boolean gotLocation = false;
                 while (!gotLocation) {
                     String startingLocation = scanner.next();
-                    x = startingLocation.substring(0, 1).toLowerCase().charAt(0) - 'a' + 1; // Grabs x coordinate from the input | (-'a'+1) turns the letter into 1-10
-                    y = Integer.parseInt(startingLocation.substring(1)); // Grabs y coordinate from the input
-                    if ((x <= 10 && x >= 0) && (y <= 10 && y >= 0)) {
+                    x = startingLocation.substring(0, 1).toLowerCase().charAt(0) - 'a' + 0; // Grabs x coordinate from the input | (-'a'+0) turns the letter into 0-9
+                    y = Integer.parseInt(startingLocation.substring(1)) - 1; // Grabs y coordinate from the input | (-1) turns 1-10 to 0-9
+                    if ((x <= 9 && x >= 0) && (y <= 9 && y >= 0)) {
                         gotLocation = true;
                     } else {
                         System.out.println("Invalid position. Please enter a coordinate from A1-J10: ");
@@ -49,30 +50,38 @@ public class Battleship {
                     if (!(x>=0 && x<=9)) {
                         validPlacement = false;
                     }
-                    if (!(y+sizes[i]>=0 && y+sizes[i]<=9)) {
+                    if (!(y+sizes[i]-1>=0 && y+sizes[i]-1<=9)) {
                         validPlacement = false;
                     }
+                    if (!validPlacement) {
+                        System.out.printf("%s cannot be placed there. \n", ships[i]);
+                    }
                 } else if (direction.equals("h")) {
-                    if (!(x+sizes[i]>=0 && x+sizes[i]<=9)) {
+                    if (!(x+sizes[i]-1>=0 && x+sizes[i]-1<=9)) {
                         validPlacement = false;
                     }
                     if (!(y>=0 && y<=9)) {
                         validPlacement = false;
                     }
+                    if (!validPlacement) {
+                        System.out.printf("%s cannot be placed there. \n", ships[i]);
+                    }
                 }
                 // Checks if other ships are in the way
-                for (int i2=0; i2<sizes[i]; i2++) {
-                    if (direction.equals("v")) {
-                        if (!(playerBoard[x][y+i2]==0)) {
-                            validPlacement = false;
-                            System.out.printf("%s cannot be placed there. \n", ships[i]);
-                            break;
-                        }
-                    } else if (direction.equals("h")) {
-                        if (!(playerBoard[x+i2][y]==0)) {
-                            validPlacement = false;
-                            System.out.printf("%s cannot be placed there. \n", ships[i]);
-                            break;
+                if (validPlacement == true) {
+                    for (int i2 = 0; i2 < sizes[i]; i2++) {
+                        if (direction.equals("v")) {
+                            if (!(playerBoard[x][y + i2] == 0)) {
+                                validPlacement = false;
+                                System.out.printf("%s cannot be placed there. \n", ships[i]);
+                                break;
+                            }
+                        } else if (direction.equals("h")) {
+                            if (!(playerBoard[x + i2][y] == 0)) {
+                                validPlacement = false;
+                                System.out.printf("%s cannot be placed there. \n", ships[i]);
+                                break;
+                            }
                         }
                     }
                 }
